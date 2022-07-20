@@ -451,7 +451,7 @@ func prepareJWTTokenWithKMS(config *Config) (string, error) {
 	userName := strings.ToUpper(config.User)
 
 	issueAtTime := time.Now().UTC()
-	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwt.MapClaims{
+	token := jwt.NewWithClaims(jwtkms.SigningMethodRS256, jwt.MapClaims{
 		"iss": fmt.Sprintf("%s.%s.%s", accountName, userName, "SHA256:"+base64.StdEncoding.EncodeToString(hash[:])),
 		"sub": fmt.Sprintf("%s.%s", accountName, userName),
 		"iat": issueAtTime.Unix(),
