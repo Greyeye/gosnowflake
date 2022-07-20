@@ -197,6 +197,10 @@ func DSN(cfg *Config) (dsn string, err error) {
 
 	params.Add("validateDefaultParameters", strconv.FormatBool(cfg.ValidateDefaultParameters != ConfigBoolFalse))
 
+	if cfg.AWSKMSKeyARN != "" {
+		params.Add("AWSKMSKeyARN", cfg.AWSKMSKeyARN)
+	}
+
 	dsn = fmt.Sprintf("%v:%v@%v:%v", url.QueryEscape(cfg.User), url.QueryEscape(cfg.Password), cfg.Host, cfg.Port)
 	if params.Encode() != "" {
 		dsn += "?" + params.Encode()

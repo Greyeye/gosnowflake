@@ -41,6 +41,8 @@ const (
 	AuthTypeOkta
 	// AuthTypeJwt is to use Jwt to perform authentication
 	AuthTypeJwt
+	// AuthTypeKMSJwt is to use KMS Key to sign and create Jwt to perform authentication
+	AuthTypeKMSJwt
 	// AuthTypeTokenAccessor is to use the provided token accessor and bypass authentication
 	AuthTypeTokenAccessor
 )
@@ -105,6 +107,8 @@ func (authType AuthType) String() string {
 		return "OKTA"
 	case AuthTypeJwt:
 		return "SNOWFLAKE_JWT"
+	case AuthTypeKMSJwt:
+		return "SNOWFLAKE_JWT_KMS"
 	case AuthTypeTokenAccessor:
 		return "TOKENACCESSOR"
 	default:
@@ -320,6 +324,13 @@ func authenticate(
 			}
 		}
 		requestMain.Token = jwtTokenString
+	case AuthTypeKMSJwt:
+		requestMain.Authenticator = AuthTypeJwt.String()
+		jwtTokenString, err := prepareJWTTokenWithKMS(sc.cfg)
+		if err != nil {
+			return nil, err
+		}
+		requestMain.Token = jwtTokenString
 	case AuthTypeSnowflake:
 		logger.Info("Username and password")
 		requestMain.LoginName = sc.cfg.User
@@ -448,7 +459,7 @@ func prepareJWTTokenWithKMS(config *Config) (string, error) {
 		"exp": issueAtTime.Add(config.JWTExpireTimeout).Unix(),
 	})
 
-	kmsConfig := jwtkms.NewKMSConfig(kms.NewFromConfig(awscfg), "keyID", false)
+	kmsConfig := jwtkms.NewKMSConfig(kms.NewFromConfig(awscfg), config.AWSKMSKeyARN, false)
 
 	tokenString, err := token.SignedString(kmsConfig.WithContext(context.Background()))
 
