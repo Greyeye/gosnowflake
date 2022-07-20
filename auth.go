@@ -311,17 +311,9 @@ func authenticate(
 		requestMain.RawSAMLResponse = string(samlResponse)
 	case AuthTypeJwt:
 		requestMain.Authenticator = AuthTypeJwt.String()
-		var jwtTokenString string
-		if sc.cfg.AWSKMSKeyARN != "" {
-			jwtTokenString, err = prepareJWTTokenWithKMS(sc.cfg)
-			if err != nil {
-				return nil, err
-			}
-		} else {
-			jwtTokenString, err = prepareJWTToken(sc.cfg)
-			if err != nil {
-				return nil, err
-			}
+		jwtTokenString, err := prepareJWTToken(sc.cfg)
+		if err != nil {
+			return nil, err
 		}
 		requestMain.Token = jwtTokenString
 	case AuthTypeKMSJwt:
