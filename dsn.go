@@ -372,6 +372,7 @@ func fillMissingConfigParameters(cfg *Config) error {
 	if cfg.Authenticator != AuthTypeExternalBrowser &&
 		cfg.Authenticator != AuthTypeOAuth &&
 		cfg.Authenticator != AuthTypeJwt &&
+		cfg.Authenticator != AuthTypeKMSJwt &&
 		strings.Trim(cfg.Password, " ") == "" {
 		// no password parameter is required for EXTERNALBROWSER, OAUTH or JWT.
 		return ErrEmptyPassword

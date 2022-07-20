@@ -59,6 +59,9 @@ func determineAuthenticatorType(cfg *Config, value string) error {
 	} else if upperCaseValue == AuthTypeJwt.String() {
 		cfg.Authenticator = AuthTypeJwt
 		return nil
+	} else if upperCaseValue == AuthTypeKMSJwt.String() {
+		cfg.Authenticator = AuthTypeKMSJwt
+		return nil
 	} else if upperCaseValue == AuthTypeExternalBrowser.String() {
 		cfg.Authenticator = AuthTypeExternalBrowser
 		return nil
