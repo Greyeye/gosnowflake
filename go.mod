@@ -1,4 +1,4 @@
-module github.com/snowflakedb/gosnowflake
+module github.com/Greyeye/gosnowflake
 
 go 1.17
 
